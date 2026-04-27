@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MotoRun PG — Entregas Rápidas em Ponta Grossa</title>
+<meta name="description" content="Motoboy em Ponta Grossa e região. Calcule o frete na hora, sem surpresas. Entregas locais e intermunicipais para Carambeí, Castro, Palmeira e mais.">
+<meta property="og:title" content="MotoRun PG — Entregas Rápidas em Ponta Grossa">
+<meta property="og:description" content="Calcule o valor da sua entrega em segundos. Atendemos PG e toda a região.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏍️</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -39,26 +45,46 @@
     top: -200px; right: -200px; pointer-events: none; z-index: 0;
     animation: pulse 6s ease-in-out infinite alternate;
   }
+  @media (max-width: 600px) { .glow-orb { display: none; } }
   @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.15); } }
 
+  /* NAV */
   nav {
     position: relative; z-index: 10;
     display: flex; align-items: center; justify-content: space-between;
-    padding: 20px 40px;
+    padding: 16px 40px;
     border-bottom: 1px solid var(--border);
     backdrop-filter: blur(10px);
+    gap: 12px;
   }
-  .logo { font-family: 'Bebas Neue', cursive; font-size: 28px; letter-spacing: 2px; color: var(--text); }
+  .logo { font-family: 'Bebas Neue', cursive; font-size: 28px; letter-spacing: 2px; color: var(--text); flex-shrink: 0; }
   .logo span { color: var(--accent); }
+
+  .nav-center { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center; }
   .badge-city {
     background: var(--surface2); border: 1px solid var(--border);
     padding: 6px 14px; border-radius: 100px;
     font-size: 12px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase;
   }
-  .status-dot { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--green); }
-  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); animation: blink 1.5s ease-in-out infinite; }
+  .nav-phone {
+    display: flex; align-items: center; gap: 6px;
+    background: rgba(37,211,102,0.1); border: 1px solid rgba(37,211,102,0.2);
+    padding: 6px 14px; border-radius: 100px;
+    font-size: 12px; color: #25D366; font-weight: 600; letter-spacing: 0.5px;
+    text-decoration: none; transition: all 0.2s;
+  }
+  .nav-phone:hover { background: rgba(37,211,102,0.2); }
+
+  .nav-right { display: flex; align-items: center; gap: 10px; }
+  .status-dot { display: flex; align-items: center; gap: 8px; font-size: 13px; white-space: nowrap; }
+  .status-dot.online { color: var(--green); }
+  .status-dot.offline { color: #888; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .dot.online { background: var(--green); animation: blink 1.5s ease-in-out infinite; }
+  .dot.offline { background: #555; }
   @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
+  /* HERO */
   .hero { position: relative; z-index: 2; text-align: center; padding: 80px 20px 40px; }
   .hero-tag {
     display: inline-block; background: rgba(255,87,34,0.12); border: 1px solid rgba(255,87,34,0.3);
@@ -67,22 +93,30 @@
   }
   h1 { font-family: 'Bebas Neue', cursive; font-size: clamp(56px, 10vw, 110px); line-height: 0.95; letter-spacing: 3px; margin-bottom: 16px; }
   h1 .line2 { color: var(--accent); display: block; }
-  .hero-sub { font-size: 16px; color: var(--muted); max-width: 480px; margin: 0 auto 50px; line-height: 1.6; }
+  .hero-sub { font-size: 16px; color: var(--muted); max-width: 480px; margin: 0 auto 16px; line-height: 1.6; }
+  .hero-hours {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--surface2); border: 1px solid var(--border);
+    padding: 8px 18px; border-radius: 100px;
+    font-size: 13px; color: var(--muted); margin-bottom: 50px;
+  }
+  .hero-hours strong { color: var(--text); }
 
+  /* CALCULATOR */
   .calculator { position: relative; z-index: 2; max-width: 680px; margin: 0 auto 60px; padding: 0 20px; }
   .calc-card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; }
   .calc-header {
     background: var(--surface2); padding: 20px 28px; border-bottom: 1px solid var(--border);
     display: flex; align-items: center; gap: 12px;
   }
-  .calc-icon { width: 36px; height: 36px; background: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+  .calc-icon { width: 36px; height: 36px; background: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
   .calc-title { font-size: 15px; font-weight: 600; }
   .calc-subtitle { font-size: 12px; color: var(--muted); margin-top: 2px; }
   .calc-body { padding: 28px; }
 
   .field-group { margin-bottom: 20px; }
   .field-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
-  .marker { width: 8px; height: 8px; border-radius: 50%; }
+  .marker { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
   .marker-green { background: var(--green); }
   .marker-red { background: var(--accent); }
 
@@ -121,7 +155,7 @@
   .route-line { display: flex; flex-direction: column; align-items: center; gap: 3px; margin-left: 3px; }
   .route-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--border); }
 
-  /* Alerta de cidade intercidade */
+  /* Alerta intercidade */
   .intercity-alert {
     display: none; margin-top: 16px;
     background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.25);
@@ -131,6 +165,13 @@
   }
   .intercity-alert.show { display: flex; animation: fadeUp 0.3s ease; }
   .intercity-alert .alert-icon { font-size: 20px; flex-shrink: 0; }
+
+  /* OBS field — aparece só depois do cálculo */
+  .obs-section {
+    display: none; margin-top: 20px;
+    animation: fadeUp 0.3s ease;
+  }
+  .obs-section.show { display: block; }
 
   .calc-result {
     margin-top: 24px; background: var(--surface2); border: 1px solid var(--border);
@@ -144,6 +185,14 @@
   .result-row .val { color: var(--text); font-weight: 500; }
   .result-row.total .val { color: var(--accent); font-size: 22px; font-family: 'Bebas Neue'; letter-spacing: 1px; }
   .result-row.intercity-row .val { color: var(--yellow); }
+
+  /* Badge de "distância real" */
+  .dist-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 10px; background: rgba(34,197,94,0.12); color: var(--green);
+    border: 1px solid rgba(34,197,94,0.2); padding: 2px 8px; border-radius: 100px;
+    margin-left: 8px; vertical-align: middle;
+  }
 
   .btn-calcular {
     width: 100%; background: var(--accent); color: white; border: none;
@@ -167,10 +216,21 @@
   .calc-note { font-size: 12px; color: var(--muted); margin-top: 16px; text-align: center; line-height: 1.6; }
   .error-msg { font-size: 12px; color: #ff6b6b; margin-top: 6px; display: none; }
   .error-msg.show { display: block; }
+
   .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.6s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* ===== SEÇÃO DE ROTAS INTERMUNICIPAIS ===== */
+  /* API status info */
+  .api-info {
+    display: none; margin-top: 12px;
+    background: rgba(255,87,34,0.06); border: 1px solid rgba(255,87,34,0.15);
+    border-radius: 10px; padding: 12px 14px;
+    font-size: 12px; color: var(--muted); line-height: 1.5;
+    align-items: flex-start; gap: 8px;
+  }
+  .api-info.show { display: flex; }
+
+  /* ROTAS INTERMUNICIPAIS */
   .intercity-section {
     position: relative; z-index: 2;
     max-width: 680px; margin: 0 auto 60px; padding: 0 20px;
@@ -199,15 +259,10 @@
   .route-card::before {
     content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
     background: linear-gradient(90deg, var(--yellow), transparent);
-    opacity: 0;
-    transition: opacity 0.2s;
+    opacity: 0; transition: opacity 0.2s;
   }
   .route-card:hover::before { opacity: 1; }
-
-  .route-card.featured {
-    border-color: rgba(245,158,11,0.2);
-    background: linear-gradient(135deg, rgba(245,158,11,0.05) 0%, var(--surface) 60%);
-  }
+  .route-card.featured { border-color: rgba(245,158,11,0.2); background: linear-gradient(135deg, rgba(245,158,11,0.05) 0%, var(--surface) 60%); }
   .route-card.featured::before { opacity: 1; }
 
   .rc-city { font-family: 'Bebas Neue'; font-size: 26px; letter-spacing: 1px; color: var(--text); }
@@ -215,15 +270,8 @@
   .rc-dist span { color: var(--text); font-weight: 500; }
   .rc-price { font-family: 'Bebas Neue'; font-size: 36px; color: var(--yellow); letter-spacing: 1px; }
   .rc-price-label { font-size: 11px; color: var(--muted); margin-top: 2px; }
-  .rc-tag {
-    position: absolute; top: 14px; right: 14px;
-    background: rgba(245,158,11,0.15); color: var(--yellow);
-    font-size: 10px; padding: 3px 8px; border-radius: 6px; letter-spacing: 0.5px;
-  }
+  .rc-tag { position: absolute; top: 14px; right: 14px; background: rgba(245,158,11,0.15); color: var(--yellow); font-size: 10px; padding: 3px 8px; border-radius: 6px; letter-spacing: 0.5px; }
   .rc-note { font-size: 11px; color: #555; margin-top: 10px; line-height: 1.5; }
-
-  .route-card.disabled { opacity: 0.55; }
-  .route-card.disabled:hover { transform: none; border-color: var(--border); }
 
   .btn-rc-whats {
     display: flex; align-items: center; justify-content: center; gap: 7px;
@@ -234,18 +282,16 @@
     cursor: pointer; transition: all 0.2s; letter-spacing: 0.3px;
   }
   .btn-rc-whats:hover { background: #25D366; color: white; border-color: #25D366; transform: translateY(-1px); }
-  .btn-rc-whats svg { flex-shrink: 0; }
 
   .routes-disclaimer {
-    margin-top: 16px;
-    background: var(--surface); border: 1px solid var(--border);
+    margin-top: 16px; background: var(--surface); border: 1px solid var(--border);
     border-radius: 12px; padding: 16px 20px;
     font-size: 12px; color: var(--muted); line-height: 1.7;
     display: flex; gap: 12px; align-items: flex-start;
   }
   .routes-disclaimer .disc-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
 
-  /* ===== FEATURES ===== */
+  /* FEATURES */
   .features {
     position: relative; z-index: 2;
     max-width: 680px; margin: 0 auto 80px; padding: 0 20px;
@@ -256,19 +302,35 @@
   .feature-card .feat-title { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
   .feature-card .feat-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
 
+  /* FOOTER */
   footer {
     position: relative; z-index: 2; text-align: center;
-    padding: 30px; border-top: 1px solid var(--border);
+    padding: 30px 20px; border-top: 1px solid var(--border);
     font-size: 13px; color: #444;
   }
   footer span { color: var(--accent); }
+  .footer-phone {
+    margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 6px;
+    font-size: 14px; color: var(--muted);
+  }
+  .footer-phone a { color: #25D366; text-decoration: none; font-weight: 600; }
+  .footer-phone a:hover { text-decoration: underline; }
+  .footer-hours { margin-top: 6px; font-size: 12px; color: #444; }
 
+  /* RESPONSIVE */
   @media (max-width: 600px) {
-    nav { padding: 16px 20px; }
+    nav { padding: 14px 16px; flex-wrap: wrap; }
     .badge-city { display: none; }
     .calc-body { padding: 20px; }
-    .features { grid-template-columns: 1fr; }
+    .features { grid-template-columns: 1fr 1fr; }
+    .features .feature-card:last-child { grid-column: span 2; }
     .routes-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 400px) {
+    .features { grid-template-columns: 1fr; }
+    .features .feature-card:last-child { grid-column: span 1; }
+    nav { gap: 8px; }
+    .nav-phone { display: none; }
   }
 </style>
 </head>
@@ -278,14 +340,26 @@
 
 <nav>
   <div class="logo">Moto<span>Run</span> PG</div>
-  <div class="badge-city">📍 Ponta Grossa — PR</div>
-  <div class="status-dot"><span class="dot"></span>Disponível agora</div>
+  <div class="nav-center">
+    <div class="badge-city">📍 Ponta Grossa — PR</div>
+    <a class="nav-phone" href="https://wa.me/5542988702217" target="_blank">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+      (42) 98870-2217
+    </a>
+  </div>
+  <div class="nav-right">
+    <div class="status-dot" id="status-dot">
+      <span class="dot" id="status-dot-circle"></span>
+      <span id="status-text">Verificando...</span>
+    </div>
+  </div>
 </nav>
 
 <div class="hero">
   <div class="hero-tag">⚡ Entrega expressa</div>
   <h1>Rápido<span class="line2">Como Deve Ser</span></h1>
   <p class="hero-sub">Calcule o valor da sua entrega em segundos. Coloque os endereços e saberá o preço na hora.</p>
+  <div class="hero-hours">🕐 Atendemos <strong>seg–sáb, 7h às 19h</strong> &nbsp;|&nbsp; Domingo: 8h às 14h</div>
 </div>
 
 <div class="calculator">
@@ -301,7 +375,7 @@
       <div class="field-group">
         <div class="field-label"><span class="marker marker-green"></span>Endereço de Coleta</div>
         <div class="input-wrap" id="wrap-origem">
-          <input type="text" id="origem" placeholder="Ex: Rua XV de Novembro, 500 — Centro" autocomplete="off" />
+          <input type="text" id="origem" placeholder="Ex: Rua XV de Novembro, 500 — Centro" autocomplete="street-address" />
           <span class="input-icon">📦</span>
           <div class="suggestions" id="sug-origem"></div>
         </div>
@@ -317,7 +391,7 @@
       <div class="field-group">
         <div class="field-label"><span class="marker marker-red"></span>Endereço de Entrega</div>
         <div class="input-wrap" id="wrap-destino">
-          <input type="text" id="destino" placeholder="Ex: Carambeí, Castro, Palmeira..." autocomplete="off" />
+          <input type="text" id="destino" placeholder="Ex: Carambeí, Castro, Palmeira..." autocomplete="street-address" />
           <span class="input-icon">📍</span>
           <div class="suggestions" id="sug-destino"></div>
         </div>
@@ -329,15 +403,23 @@
         <span id="intercity-alert-text">Rota intermunicipal detectada — tarifa fixa aplicada.</span>
       </div>
 
-      <div class="field-group" style="margin-top:20px;">
-        <div class="field-label">📝 Observação (opcional)</div>
-        <div class="input-wrap">
-          <input type="text" id="obs" placeholder="Ex: Peça de maquinário, frágil, ligar ao chegar..." />
-          <span class="input-icon">💬</span>
+      <!-- OBS aparece apenas após calcular -->
+      <div class="obs-section" id="obs-section">
+        <div class="field-group" style="margin-bottom:0">
+          <div class="field-label">📝 Observação (opcional)</div>
+          <div class="input-wrap">
+            <input type="text" id="obs" placeholder="Ex: Peça frágil, ligar ao chegar, entregar na portaria..." />
+            <span class="input-icon">💬</span>
+          </div>
         </div>
       </div>
 
       <button class="btn-calcular" id="btn-calc" onclick="calcular()">Calcular Frete</button>
+
+      <div class="api-info" id="api-info">
+        <span>⚠️</span>
+        <span id="api-info-text">Não foi possível calcular a distância real. O valor foi estimado com base na rota e pode variar até 15% conforme o trajeto exato.</span>
+      </div>
 
       <div class="calc-result" id="resultado">
         <div class="result-row" id="row-tipo" style="display:none">
@@ -345,7 +427,7 @@
           <span class="val" id="res-tipo">—</span>
         </div>
         <div class="result-row">
-          <span>📏 Distância estimada</span>
+          <span>📏 Distância</span>
           <span class="val" id="res-dist">—</span>
         </div>
         <div class="result-row" id="row-base-label">
@@ -371,7 +453,7 @@
   </div>
 </div>
 
-<!-- ===== ROTAS INTERMUNICIPAIS ===== -->
+<!-- ROTAS INTERMUNICIPAIS -->
 <div class="intercity-section" id="tabela-rotas">
   <div class="section-header">
     <div class="section-tag">🚜 Rotas Intermunicipais</div>
@@ -380,7 +462,6 @@
   </div>
 
   <div class="routes-grid">
-
     <div class="route-card featured">
       <div class="rc-tag">✅ Disponível</div>
       <div class="rc-city">Carambeí</div>
@@ -458,7 +539,6 @@
         Solicitar Orçamento
       </button>
     </div>
-
   </div>
 
   <div class="routes-disclaimer">
@@ -487,15 +567,71 @@
 
 <footer>
   Feito com 🏍️ para <span>Ponta Grossa e Região — PR</span> &nbsp;|&nbsp; MotoRun PG © 2025
+  <div class="footer-phone">
+    📱 Fale agora: <a href="https://wa.me/5542988702217" target="_blank">(42) 98870-2217</a>
+  </div>
+  <div class="footer-hours">Seg–Sáb: 7h às 19h &nbsp;|&nbsp; Domingo: 8h às 14h</div>
 </footer>
 
 <script>
+// ============================================================
+// CONFIGURAÇÕES
+// ============================================================
 const NUMERO = '5542988702217';
 const BASE_TAXA = 15;
 const BASE_KM = 5;
 const EXTRA_POR_KM = 2;
 
-// Tabela de preços intermunicipais
+// A chave gratuita cobre até ~40.000 consultas/mês
+const GOOGLE_MAPS_API_KEY = 'AIzaSyD6FjeD6bFdaYc68uhjJRi93NFbIlE_XEw';
+
+// ============================================================
+// STATUS DINÂMICO POR HORÁRIO
+// ============================================================
+function atualizarStatus() {
+  const agora = new Date();
+  // Ajuste para horário de Brasília (UTC-3)
+  const brt = new Date(agora.toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }));
+  const hora = brt.getHours();
+  const dia = brt.getDay(); // 0=dom, 1=seg...6=sab
+
+  let online = false;
+  if (dia >= 1 && dia <= 6) {
+    // Seg–Sab: 7h às 19h
+    online = hora >= 7 && hora < 19;
+  } else {
+    // Domingo: 8h às 14h
+    online = hora >= 8 && hora < 14;
+  }
+
+  const dotEl = document.getElementById('status-dot');
+  const dotCircle = document.getElementById('status-dot-circle');
+  const dotText = document.getElementById('status-text');
+
+  if (online) {
+    dotEl.className = 'status-dot online';
+    dotCircle.className = 'dot online';
+    dotText.textContent = 'Disponível agora';
+  } else {
+    dotEl.className = 'status-dot offline';
+    dotCircle.className = 'dot offline';
+    // Calcular próxima abertura
+    let proximo = '';
+    if (dia === 0 && hora >= 14) proximo = 'Abre seg às 7h';
+    else if (dia === 6 && hora >= 19) proximo = 'Abre dom às 8h';
+    else if (hora >= 19) proximo = 'Abre amanhã às 7h';
+    else if (hora < 7) proximo = 'Abre às 7h';
+    else if (dia === 0 && hora < 8) proximo = 'Abre às 8h';
+    else proximo = 'Fora do horário';
+    dotText.textContent = proximo;
+  }
+}
+atualizarStatus();
+setInterval(atualizarStatus, 60000);
+
+// ============================================================
+// DADOS
+// ============================================================
 const CIDADES_FIXAS = {
   'carambeí': { preco: 100, km: 22, label: 'Carambeí' },
   'carambei': { preco: 100, km: 22, label: 'Carambeí' },
@@ -547,6 +683,9 @@ function detectarCidade(texto) {
   return null;
 }
 
+// ============================================================
+// AUTOCOMPLETE DE SUGESTÕES
+// ============================================================
 function setupSuggestions(inputId, sugId, incluirCidades) {
   const input = document.getElementById(inputId);
   const sug = document.getElementById(sugId);
@@ -558,13 +697,11 @@ function setupSuggestions(inputId, sugId, incluirCidades) {
     const lval = val.toLowerCase();
     let html = '';
 
-    // Bairros PG
     const matchBairros = bairrosPG
       .filter(b => b.toLowerCase().includes(lval))
       .slice(0, 3)
-      .map(b => `<div class="suggestion-item" onclick="selectSug('${inputId}','${sugId}','Ponta Grossa, PR — ${b}')"><span class="s-icon">📍</span>Ponta Grossa, PR — ${b}</div>`);
+      .map(b => `<div class="suggestion-item" onclick="selectSug('${inputId}','${sugId}','${b}, Ponta Grossa — PR')"><span class="s-icon">📍</span>${b} — Ponta Grossa, PR</div>`);
 
-    // Cidades da região (só no campo destino)
     let matchCidades = [];
     if (incluirCidades) {
       matchCidades = cidadesRegiao
@@ -585,7 +722,6 @@ function setupSuggestions(inputId, sugId, incluirCidades) {
     if (!input.contains(e.target) && !sug.contains(e.target)) sug.classList.remove('visible');
   });
 
-  // Detectar cidade ao digitar no campo destino
   if (incluirCidades) {
     input.addEventListener('input', () => atualizarAlertaIntercidade());
   }
@@ -614,15 +750,43 @@ function atualizarAlertaIntercidade() {
 setupSuggestions('origem', 'sug-origem', false);
 setupSuggestions('destino', 'sug-destino', true);
 
-function estimarDistanciaLocal(end1, end2) {
-  let hash = 0;
-  const str = end1 + end2;
-  for (let i = 0; i < str.length; i++) {
-    hash = ((hash << 5) - hash) + str.charCodeAt(i);
-    hash |= 0;
+// ============================================================
+// CÁLCULO DE DISTÂNCIA REAL — GOOGLE MAPS DISTANCE MATRIX
+// ============================================================
+async function calcularDistanciaReal(origem, destino) {
+  // Se não configurou a chave, usa fallback
+  if (!GOOGLE_MAPS_API_KEY || GOOGLE_MAPS_API_KEY === 'SUA_CHAVE_AQUI') {
+    return null;
   }
-  return Math.round((2 + (Math.abs(hash) % 180) / 10) * 10) / 10;
+
+  try {
+    // Adiciona "Ponta Grossa, PR" como contexto se o endereço parecer ser só bairro/rua local
+    const origemCompleto = origem.toLowerCase().includes('ponta grossa') ? origem : `${origem}, Ponta Grossa, PR, Brasil`;
+    const destinoCompleto = destino.toLowerCase().includes('pr') || destino.toLowerCase().includes('brasil') ? destino : `${destino}, PR, Brasil`;
+
+    const url = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${encodeURIComponent(origemCompleto)}&destinations=${encodeURIComponent(destinoCompleto)}&key=${GOOGLE_MAPS_API_KEY}&language=pt-BR&units=metric`;
+
+    const resp = await fetch(url);
+    if (!resp.ok) return null;
+
+    const data = await resp.json();
+
+    if (
+      data.status === 'OK' &&
+      data.rows?.[0]?.elements?.[0]?.status === 'OK'
+    ) {
+      const el = data.rows[0].elements[0];
+      const distKm = el.distance.value / 1000; // metros → km
+      const duracaoTexto = el.duration.text;
+      return { km: Math.round(distKm * 10) / 10, duracao: duracaoTexto, real: true };
+    }
+    return null;
+  } catch (e) {
+    console.warn('Google Maps API indisponível:', e);
+    return null;
+  }
 }
+
 
 function calcularPrecoLocal(km) {
   if (km <= BASE_KM) return BASE_TAXA;
@@ -633,13 +797,17 @@ function fmt(val) {
   return val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 }
 
-function calcular() {
+// ============================================================
+// FUNÇÃO PRINCIPAL DE CÁLCULO
+// ============================================================
+async function calcular() {
   const origem = document.getElementById('origem').value.trim();
   const destino = document.getElementById('destino').value.trim();
   let valid = true;
 
   document.getElementById('err-origem').classList.remove('show');
   document.getElementById('err-destino').classList.remove('show');
+  document.getElementById('api-info').classList.remove('show');
 
   if (!origem) { document.getElementById('err-origem').classList.add('show'); valid = false; }
   if (!destino) { document.getElementById('err-destino').classList.add('show'); valid = false; }
@@ -647,75 +815,135 @@ function calcular() {
 
   const btn = document.getElementById('btn-calc');
   btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Calculando...';
+  btn.innerHTML = '<span class="spinner"></span> Calculando rota...';
 
   const cidadeFixa = detectarCidade(destino);
 
-  setTimeout(() => {
-    let km, preco, extraKm = 0, tipoRota, notaTexto;
+  // Tentar distância real só para rotas locais (intermunicipais já têm tarifa fixa)
+  let distanciaReal = null;
+  if (!cidadeFixa) {
+    distanciaReal = await calcularDistanciaReal(origem, destino);
+  }
 
-    if (cidadeFixa) {
-      // Rota intermunicipal com tarifa fixa
-      km = cidadeFixa.km;
-      preco = cidadeFixa.preco;
-      tipoRota = `Intermunicipal — ${cidadeFixa.label}`;
-      notaTexto = `Tarifa fixa para ${cidadeFixa.label}. Inclui deslocamento de ida e aguardo razoável. Para cargas especiais, confirme pelo WhatsApp.`;
+  let km, preco, extraKm = 0, notaTexto;
 
-      document.getElementById('row-tipo').style.display = 'flex';
-      document.getElementById('res-tipo').textContent = tipoRota;
-      document.getElementById('label-base').textContent = `💰 Tarifa fixa intermunicipal`;
-      document.getElementById('res-base').textContent = fmt(preco);
-      document.getElementById('row-extra').style.display = 'none';
-      document.getElementById('row-total').querySelector('.val').style.color = 'var(--yellow)';
+  if (cidadeFixa) {
+    km = cidadeFixa.km;
+    preco = cidadeFixa.preco;
+    const tipoRota = `Intermunicipal — ${cidadeFixa.label}`;
+    notaTexto = `Tarifa fixa para ${cidadeFixa.label}. Inclui deslocamento de ida e aguardo razoável. Para cargas especiais, confirme pelo WhatsApp.`;
 
-    } else {
-      // Rota local PG
-      km = estimarDistanciaLocal(origem, destino);
+    document.getElementById('row-tipo').style.display = 'flex';
+    document.getElementById('res-tipo').textContent = tipoRota;
+    document.getElementById('label-base').textContent = `💰 Tarifa fixa intermunicipal`;
+    document.getElementById('res-base').textContent = fmt(preco);
+    document.getElementById('row-extra').style.display = 'none';
+    document.getElementById('row-total').querySelector('.val').style.color = 'var(--yellow)';
+
+    document.getElementById('res-dist').innerHTML = `${km} km`;
+
+  } else {
+    document.getElementById('row-tipo').style.display = 'none';
+    document.getElementById('row-total').querySelector('.val').style.color = 'var(--accent)';
+
+    if (distanciaReal) {
+      // ✅ Distância real do Google Maps
+      km = distanciaReal.km;
       preco = calcularPrecoLocal(km);
       extraKm = km > BASE_KM ? km - BASE_KM : 0;
-      tipoRota = 'Local — Ponta Grossa';
-      notaTexto = `Estimativa baseada na rota. O valor final pode variar até 10% conforme o trânsito.`;
+      notaTexto = `Distância calculada via Google Maps. Tempo estimado: ${distanciaReal.duracao}. O valor pode variar até 5% conforme o trajeto.`;
 
-      document.getElementById('row-tipo').style.display = 'none';
-      document.getElementById('label-base').textContent = `💰 Taxa base (até 5km)`;
-      document.getElementById('res-base').textContent = 'R$ 15,00';
-      document.getElementById('row-total').querySelector('.val').style.color = 'var(--accent)';
+      document.getElementById('res-dist').innerHTML = `${km.toFixed(1)} km <span class="dist-badge">✓ rota real</span>`;
+    } else {
+      // ❌ API indisponível — erro controlado, sem inventar número
+      btn.disabled = false;
+      btn.innerHTML = '🔄 Tentar novamente';
 
-      if (extraKm > 0) {
-        document.getElementById('row-extra').style.display = 'flex';
-        document.getElementById('res-extra').textContent = `${extraKm.toFixed(1)} km × R$2 = ${fmt(extraKm * EXTRA_POR_KM)}`;
-      } else {
-        document.getElementById('row-extra').style.display = 'none';
-      }
+      document.getElementById('api-info').classList.add('show');
+      document.getElementById('api-info-text').textContent =
+        '⚠️ Não foi possível calcular a distância agora. A página precisa estar hospedada em um servidor para acessar o Google Maps. Enquanto isso, solicite o orçamento pelo WhatsApp.';
+
+      // Botão de WhatsApp para orçamento manual
+      dadosCalculo = { origem, destino, km: null, preco: null, extraKm: 0, obs: '', cidadeFixa: null, distanciaReal: false, semDistancia: true };
+      const btnWhats = document.getElementById('btn-whats');
+      btnWhats.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg> Pedir orçamento pelo WhatsApp`;
+      btnWhats.classList.add('show');
+      document.getElementById('obs-section').classList.add('show');
+      return;
     }
 
-    dadosCalculo = { origem, destino, km, preco, extraKm, obs: document.getElementById('obs').value.trim(), cidadeFixa };
+    document.getElementById('label-base').textContent = `💰 Taxa base (até 5km)`;
+    document.getElementById('res-base').textContent = 'R$ 15,00';
 
-    document.getElementById('res-dist').textContent = km.toFixed(0) + ' km' + (cidadeFixa ? '' : ' (estimado)');
-    document.getElementById('res-total').textContent = fmt(preco);
-    document.getElementById('res-nota').textContent = notaTexto;
+    if (extraKm > 0) {
+      document.getElementById('row-extra').style.display = 'flex';
+      document.getElementById('res-extra').textContent = `${extraKm.toFixed(1)} km × R$2 = ${fmt(extraKm * EXTRA_POR_KM)}`;
+    } else {
+      document.getElementById('row-extra').style.display = 'none';
+    }
+  }
 
-    document.getElementById('resultado').classList.add('show');
-    document.getElementById('btn-whats').classList.add('show');
+  dadosCalculo = {
+    origem, destino, km, preco, extraKm,
+    obs: document.getElementById('obs').value.trim(),
+    cidadeFixa,
+    distanciaReal: !!distanciaReal,
+    duracao: distanciaReal?.duracao
+  };
 
-    btn.disabled = false;
-    btn.innerHTML = '🔄 Recalcular';
-    document.getElementById('resultado').scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }, 1100);
+  document.getElementById('res-total').textContent = fmt(preco);
+  document.getElementById('res-nota').textContent = notaTexto;
+
+  document.getElementById('resultado').classList.add('show');
+  document.getElementById('btn-whats').classList.add('show');
+
+  // Mostrar campo de observação após calcular
+  document.getElementById('obs-section').classList.add('show');
+
+  btn.disabled = false;
+  btn.innerHTML = '🔄 Recalcular';
+  document.getElementById('resultado').scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
+// ============================================================
+// WHATSAPP
+// ============================================================
 function enviarWhatsApp() {
   if (!dadosCalculo) return;
-  const { origem, destino, km, preco, obs, cidadeFixa } = dadosCalculo;
 
-  const tipoLabel = cidadeFixa ? `🚜 *Rota intermunicipal* — ${cidadeFixa.label}` : `📦 *Rota local* — Ponta Grossa`;
+  // Atualiza obs no momento do envio
+  dadosCalculo.obs = document.getElementById('obs').value.trim();
 
-  const msg = `🏍️ *NOVO PEDIDO — MotoRun PG*
+  const { origem, destino, km, preco, obs, cidadeFixa, distanciaReal, duracao, semDistancia } = dadosCalculo;
+
+  // Sem distância calculada — envia só os endereços para orçamento manual
+  if (semDistancia) {
+    const msg =
+`🏍️ *ORÇAMENTO — MotoRun PG*
+
+📦 *Coleta:* ${origem}
+📍 *Entrega:* ${destino}${obs ? `\n💬 *Obs:* ${obs}` : ''}
+
+_Calculadora não conseguiu medir a rota — solicito orçamento pelo site_`;
+    window.open(`https://wa.me/${NUMERO}?text=${encodeURIComponent(msg)}`, '_blank');
+    return;
+  }
+
+  const tipoLabel = cidadeFixa
+    ? `🚜 *Rota intermunicipal* — ${cidadeFixa.label}`
+    : `📦 *Rota local* — Ponta Grossa`;
+
+  const distLabel = cidadeFixa
+    ? `~${km} km (tarifa fixa)`
+    : `${km.toFixed(1)} km (Google Maps${duracao ? ` · ${duracao}` : ''})`;
+
+  const msg =
+`🏍️ *NOVO PEDIDO — MotoRun PG*
 
 ${tipoLabel}
 📦 *Coleta:* ${origem}
 📍 *Entrega:* ${destino}
-📏 *Distância:* ~${km.toFixed(0)} km
+📏 *Distância:* ${distLabel}
 💰 *Valor:* ${fmt(preco)}${cidadeFixa ? ' (tarifa fixa)' : ''}${obs ? `\n💬 *Obs:* ${obs}` : ''}
 
 _Pedido feito pelo site MotoRun PG_`;
@@ -731,6 +959,9 @@ function pedirViaWhats(cidade, preco, km) {
   window.open(`https://wa.me/${NUMERO}?text=${encodeURIComponent(msg)}`, '_blank');
 }
 
+// ============================================================
+// KEYBOARD SHORTCUTS
+// ============================================================
 document.getElementById('destino').addEventListener('input', atualizarAlertaIntercidade);
 document.getElementById('origem').addEventListener('keydown', e => { if(e.key === 'Enter') document.getElementById('destino').focus(); });
 document.getElementById('destino').addEventListener('keydown', e => { if(e.key === 'Enter') calcular(); });
