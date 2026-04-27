@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MotoRun PG — Entregas Rápidas em Ponta Grossa</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0b;
+    --surface: #111113;
+    --surface2: #1a1a1e;
+    --surface3: #222228;
+    --accent: #ff5722;
+    --accent2: #ff8a50;
+    --green: #22c55e;
+    --yellow: #f59e0b;
+    --text: #f0f0f0;
+    --muted: #888;
+    --border: rgba(255,255,255,0.08);
+    --radius: 14px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  .noise {
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.4;
+  }
+  .glow-orb {
+    position: fixed; width: 600px; height: 600px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,87,34,0.08) 0%, transparent 70%);
+    top: -200px; right: -200px; pointer-events: none; z-index: 0;
+    animation: pulse 6s ease-in-out infinite alternate;
+  }
+  @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.15); } }
+
+  nav {
+    position: relative; z-index: 10;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 40px;
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(10px);
+  }
+  .logo { font-family: 'Bebas Neue', cursive; font-size: 28px; letter-spacing: 2px; color: var(--text); }
+  .logo span { color: var(--accent); }
+  .badge-city {
+    background: var(--surface2); border: 1px solid var(--border);
+    padding: 6px 14px; border-radius: 100px;
+    font-size: 12px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase;
+  }
+  .status-dot { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--green); }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); animation: blink 1.5s ease-in-out infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  .hero { position: relative; z-index: 2; text-align: center; padding: 80px 20px 40px; }
+  .hero-tag {
+    display: inline-block; background: rgba(255,87,34,0.12); border: 1px solid rgba(255,87,34,0.3);
+    color: var(--accent2); font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
+    padding: 6px 16px; border-radius: 100px; margin-bottom: 24px;
+  }
+  h1 { font-family: 'Bebas Neue', cursive; font-size: clamp(56px, 10vw, 110px); line-height: 0.95; letter-spacing: 3px; margin-bottom: 16px; }
+  h1 .line2 { color: var(--accent); display: block; }
+  .hero-sub { font-size: 16px; color: var(--muted); max-width: 480px; margin: 0 auto 50px; line-height: 1.6; }
+
+  .calculator { position: relative; z-index: 2; max-width: 680px; margin: 0 auto 60px; padding: 0 20px; }
+  .calc-card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; }
+  .calc-header {
+    background: var(--surface2); padding: 20px 28px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .calc-icon { width: 36px; height: 36px; background: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+  .calc-title { font-size: 15px; font-weight: 600; }
+  .calc-subtitle { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .calc-body { padding: 28px; }
+
+  .field-group { margin-bottom: 20px; }
+  .field-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+  .marker { width: 8px; height: 8px; border-radius: 50%; }
+  .marker-green { background: var(--green); }
+  .marker-red { background: var(--accent); }
+
+  .input-wrap { position: relative; }
+  .input-wrap input {
+    width: 100%; background: var(--surface2); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 14px 48px 14px 16px;
+    color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px; outline: none; transition: all 0.2s;
+  }
+  .input-wrap input:focus { border-color: rgba(255,87,34,0.5); background: var(--surface3); box-shadow: 0 0 0 3px rgba(255,87,34,0.08); }
+  .input-wrap input::placeholder { color: #444; }
+  .input-icon { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-size: 18px; opacity: 0.3; pointer-events: none; }
+
+  .suggestions {
+    position: absolute; top: calc(100% + 6px); left: 0; right: 0;
+    background: var(--surface3); border: 1px solid var(--border);
+    border-radius: var(--radius); z-index: 100; overflow: hidden;
+    display: none; box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+  }
+  .suggestions.visible { display: block; }
+  .suggestion-item {
+    padding: 12px 16px; cursor: pointer; font-size: 14px; color: var(--muted);
+    border-bottom: 1px solid var(--border); transition: all 0.15s;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .suggestion-item:last-child { border-bottom: none; }
+  .suggestion-item:hover { background: rgba(255,87,34,0.08); color: var(--text); }
+  .suggestion-item .s-icon { font-size: 14px; opacity: 0.5; }
+  .suggestion-item.intercity { border-left: 2px solid var(--yellow); }
+  .suggestion-item.intercity .s-badge {
+    background: rgba(245,158,11,0.15); color: var(--yellow);
+    font-size: 10px; padding: 2px 6px; border-radius: 4px; letter-spacing: 0.5px; margin-left: auto;
+  }
+
+  .divider-route { display: flex; align-items: center; gap: 12px; margin: 4px 0; padding-left: 4px; }
+  .route-line { display: flex; flex-direction: column; align-items: center; gap: 3px; margin-left: 3px; }
+  .route-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--border); }
+
+  /* Alerta de cidade intercidade */
+  .intercity-alert {
+    display: none; margin-top: 16px;
+    background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.25);
+    border-radius: var(--radius); padding: 14px 16px;
+    font-size: 13px; color: var(--yellow); line-height: 1.5;
+    align-items: center; gap: 10px;
+  }
+  .intercity-alert.show { display: flex; animation: fadeUp 0.3s ease; }
+  .intercity-alert .alert-icon { font-size: 20px; flex-shrink: 0; }
+
+  .calc-result {
+    margin-top: 24px; background: var(--surface2); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 24px; display: none;
+  }
+  .calc-result.show { display: block; animation: fadeUp 0.3s ease; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+  .result-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 14px; color: var(--muted); }
+  .result-row.total { border-top: 1px solid var(--border); margin-top: 16px; padding-top: 16px; margin-bottom: 0; color: var(--text); font-size: 16px; font-weight: 600; }
+  .result-row .val { color: var(--text); font-weight: 500; }
+  .result-row.total .val { color: var(--accent); font-size: 22px; font-family: 'Bebas Neue'; letter-spacing: 1px; }
+  .result-row.intercity-row .val { color: var(--yellow); }
+
+  .btn-calcular {
+    width: 100%; background: var(--accent); color: white; border: none;
+    border-radius: var(--radius); padding: 16px; font-family: 'DM Sans', sans-serif;
+    font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 20px;
+    transition: all 0.2s; letter-spacing: 0.5px;
+  }
+  .btn-calcular:hover { background: #e64a19; transform: translateY(-1px); }
+  .btn-calcular:active { transform: translateY(0); }
+  .btn-calcular:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  .btn-whatsapp {
+    width: 100%; background: #25D366; color: white; border: none;
+    border-radius: var(--radius); padding: 16px; font-family: 'DM Sans', sans-serif;
+    font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 12px;
+    transition: all 0.2s; display: none; align-items: center; justify-content: center; gap: 8px;
+  }
+  .btn-whatsapp.show { display: flex; animation: fadeUp 0.4s ease 0.1s both; }
+  .btn-whatsapp:hover { background: #1ebe59; transform: translateY(-1px); }
+
+  .calc-note { font-size: 12px; color: var(--muted); margin-top: 16px; text-align: center; line-height: 1.6; }
+  .error-msg { font-size: 12px; color: #ff6b6b; margin-top: 6px; display: none; }
+  .error-msg.show { display: block; }
+  .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.6s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ===== SEÇÃO DE ROTAS INTERMUNICIPAIS ===== */
+  .intercity-section {
+    position: relative; z-index: 2;
+    max-width: 680px; margin: 0 auto 60px; padding: 0 20px;
+  }
+  .section-header { margin-bottom: 24px; }
+  .section-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.25);
+    color: var(--yellow); font-size: 11px; letter-spacing: 2px;
+    text-transform: uppercase; padding: 6px 14px; border-radius: 100px; margin-bottom: 14px;
+  }
+  .section-title { font-family: 'Bebas Neue'; font-size: 38px; letter-spacing: 2px; line-height: 1; }
+  .section-title span { color: var(--yellow); }
+  .section-sub { font-size: 14px; color: var(--muted); margin-top: 8px; line-height: 1.6; }
+
+  .routes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  .route-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 20px 22px;
+    position: relative; overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+    cursor: default;
+  }
+  .route-card:hover { border-color: rgba(245,158,11,0.3); transform: translateY(-2px); }
+  .route-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--yellow), transparent);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .route-card:hover::before { opacity: 1; }
+
+  .route-card.featured {
+    border-color: rgba(245,158,11,0.2);
+    background: linear-gradient(135deg, rgba(245,158,11,0.05) 0%, var(--surface) 60%);
+  }
+  .route-card.featured::before { opacity: 1; }
+
+  .rc-city { font-family: 'Bebas Neue'; font-size: 26px; letter-spacing: 1px; color: var(--text); }
+  .rc-dist { font-size: 12px; color: var(--muted); margin: 2px 0 12px; }
+  .rc-dist span { color: var(--text); font-weight: 500; }
+  .rc-price { font-family: 'Bebas Neue'; font-size: 36px; color: var(--yellow); letter-spacing: 1px; }
+  .rc-price-label { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .rc-tag {
+    position: absolute; top: 14px; right: 14px;
+    background: rgba(245,158,11,0.15); color: var(--yellow);
+    font-size: 10px; padding: 3px 8px; border-radius: 6px; letter-spacing: 0.5px;
+  }
+  .rc-note { font-size: 11px; color: #555; margin-top: 10px; line-height: 1.5; }
+
+  .route-card.disabled { opacity: 0.55; }
+  .route-card.disabled:hover { transform: none; border-color: var(--border); }
+
+  .btn-rc-whats {
+    display: flex; align-items: center; justify-content: center; gap: 7px;
+    width: 100%; margin-top: 14px;
+    background: rgba(37,211,102,0.12); border: 1px solid rgba(37,211,102,0.25);
+    color: #25D366; border-radius: 10px; padding: 10px 14px;
+    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: all 0.2s; letter-spacing: 0.3px;
+  }
+  .btn-rc-whats:hover { background: #25D366; color: white; border-color: #25D366; transform: translateY(-1px); }
+  .btn-rc-whats svg { flex-shrink: 0; }
+
+  .routes-disclaimer {
+    margin-top: 16px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px 20px;
+    font-size: 12px; color: var(--muted); line-height: 1.7;
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+  .routes-disclaimer .disc-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+
+  /* ===== FEATURES ===== */
+  .features {
+    position: relative; z-index: 2;
+    max-width: 680px; margin: 0 auto 80px; padding: 0 20px;
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+  }
+  .feature-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px 20px; text-align: center; }
+  .feature-card .feat-icon { font-size: 28px; margin-bottom: 12px; }
+  .feature-card .feat-title { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+  .feature-card .feat-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+  footer {
+    position: relative; z-index: 2; text-align: center;
+    padding: 30px; border-top: 1px solid var(--border);
+    font-size: 13px; color: #444;
+  }
+  footer span { color: var(--accent); }
+
+  @media (max-width: 600px) {
+    nav { padding: 16px 20px; }
+    .badge-city { display: none; }
+    .calc-body { padding: 20px; }
+    .features { grid-template-columns: 1fr; }
+    .routes-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="noise"></div>
+<div class="glow-orb"></div>
+
+<nav>
+  <div class="logo">Moto<span>Run</span> PG</div>
+  <div class="badge-city">📍 Ponta Grossa — PR</div>
+  <div class="status-dot"><span class="dot"></span>Disponível agora</div>
+</nav>
+
+<div class="hero">
+  <div class="hero-tag">⚡ Entrega expressa</div>
+  <h1>Rápido<span class="line2">Como Deve Ser</span></h1>
+  <p class="hero-sub">Calcule o valor da sua entrega em segundos. Coloque os endereços e saberá o preço na hora.</p>
+</div>
+
+<div class="calculator">
+  <div class="calc-card">
+    <div class="calc-header">
+      <div class="calc-icon">🏍️</div>
+      <div>
+        <div class="calc-title">Calculadora de Frete</div>
+        <div class="calc-subtitle">Ponta Grossa e cidades da região</div>
+      </div>
+    </div>
+    <div class="calc-body">
+      <div class="field-group">
+        <div class="field-label"><span class="marker marker-green"></span>Endereço de Coleta</div>
+        <div class="input-wrap" id="wrap-origem">
+          <input type="text" id="origem" placeholder="Ex: Rua XV de Novembro, 500 — Centro" autocomplete="off" />
+          <span class="input-icon">📦</span>
+          <div class="suggestions" id="sug-origem"></div>
+        </div>
+        <div class="error-msg" id="err-origem">Por favor, informe o endereço de coleta.</div>
+      </div>
+
+      <div class="divider-route">
+        <div class="route-line">
+          <div class="route-dot"></div><div class="route-dot"></div><div class="route-dot"></div>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="field-label"><span class="marker marker-red"></span>Endereço de Entrega</div>
+        <div class="input-wrap" id="wrap-destino">
+          <input type="text" id="destino" placeholder="Ex: Carambeí, Castro, Palmeira..." autocomplete="off" />
+          <span class="input-icon">📍</span>
+          <div class="suggestions" id="sug-destino"></div>
+        </div>
+        <div class="error-msg" id="err-destino">Por favor, informe o endereço de entrega.</div>
+      </div>
+
+      <div class="intercity-alert" id="intercity-alert">
+        <span class="alert-icon">🚜</span>
+        <span id="intercity-alert-text">Rota intermunicipal detectada — tarifa fixa aplicada.</span>
+      </div>
+
+      <div class="field-group" style="margin-top:20px;">
+        <div class="field-label">📝 Observação (opcional)</div>
+        <div class="input-wrap">
+          <input type="text" id="obs" placeholder="Ex: Peça de maquinário, frágil, ligar ao chegar..." />
+          <span class="input-icon">💬</span>
+        </div>
+      </div>
+
+      <button class="btn-calcular" id="btn-calc" onclick="calcular()">Calcular Frete</button>
+
+      <div class="calc-result" id="resultado">
+        <div class="result-row" id="row-tipo" style="display:none">
+          <span>🗺️ Tipo de rota</span>
+          <span class="val" id="res-tipo">—</span>
+        </div>
+        <div class="result-row">
+          <span>📏 Distância estimada</span>
+          <span class="val" id="res-dist">—</span>
+        </div>
+        <div class="result-row" id="row-base-label">
+          <span id="label-base">💰 Taxa base (até 5km)</span>
+          <span class="val" id="res-base">R$ 15,00</span>
+        </div>
+        <div class="result-row" id="row-extra" style="display:none">
+          <span>➕ Km adicional</span>
+          <span class="val" id="res-extra">—</span>
+        </div>
+        <div class="result-row total intercity-row" id="row-total">
+          <span>Total da corrida</span>
+          <span class="val" id="res-total">—</span>
+        </div>
+        <p class="calc-note" id="res-nota"></p>
+      </div>
+
+      <button class="btn-whatsapp" id="btn-whats" onclick="enviarWhatsApp()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+        Confirmar e Enviar Pedido
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ROTAS INTERMUNICIPAIS ===== -->
+<div class="intercity-section" id="tabela-rotas">
+  <div class="section-header">
+    <div class="section-tag">🚜 Rotas Intermunicipais</div>
+    <div class="section-title">A Gurizada<br><span>Vai de Baú!</span></div>
+    <p class="section-sub">Peças agrícolas, maquinário e insumos entregues na região. Tarifa fixa sem surpresa — a gente vai até onde precisa.</p>
+  </div>
+
+  <div class="routes-grid">
+
+    <div class="route-card featured">
+      <div class="rc-tag">✅ Disponível</div>
+      <div class="rc-city">Carambeí</div>
+      <div class="rc-dist">~<span>22 km</span> de PG</div>
+      <div class="rc-price">R$ 100</div>
+      <div class="rc-price-label">tarifa fixa • ida e volta incluso</div>
+      <div class="rc-note">Laticínios, peças e maquinário. Saída o dia todo.</div>
+      <button class="btn-rc-whats" onclick="pedirViaWhats('Carambeí','R$ 100','22')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+        Pedir via WhatsApp
+      </button>
+    </div>
+
+    <div class="route-card featured">
+      <div class="rc-tag">✅ Disponível</div>
+      <div class="rc-city">Castro</div>
+      <div class="rc-dist">~<span>52 km</span> de PG</div>
+      <div class="rc-price">R$ 120</div>
+      <div class="rc-price-label">tarifa fixa • ida e volta incluso</div>
+      <div class="rc-note">Polo agrícola forte. Peças de reposição e insumos.</div>
+      <button class="btn-rc-whats" onclick="pedirViaWhats('Castro','R$ 120','52')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+        Pedir via WhatsApp
+      </button>
+    </div>
+
+    <div class="route-card">
+      <div class="rc-tag">✅ Disponível</div>
+      <div class="rc-city">Palmeira</div>
+      <div class="rc-dist">~<span>45 km</span> de PG</div>
+      <div class="rc-price">R$ 110</div>
+      <div class="rc-price-label">tarifa estimada</div>
+      <div class="rc-note">Baseado na distância relativa a Carambeí/Castro.</div>
+      <button class="btn-rc-whats" onclick="pedirViaWhats('Palmeira','R$ 110','45')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+        Pedir via WhatsApp
+      </button>
+    </div>
+
+    <div class="route-card">
+      <div class="rc-tag">✅ Disponível</div>
+      <div class="rc-city">Piraí do Sul</div>
+      <div class="rc-dist">~<span>80 km</span> de PG</div>
+      <div class="rc-price">R$ 150</div>
+      <div class="rc-price-label">tarifa estimada</div>
+      <div class="rc-note">Região de soja e pecuária. Sujeito a confirmação.</div>
+      <button class="btn-rc-whats" onclick="pedirViaWhats('Piraí do Sul','R$ 150','80')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+        Pedir via WhatsApp
+      </button>
+    </div>
+
+    <div class="route-card">
+      <div class="rc-tag">✅ Disponível</div>
+      <div class="rc-city">Tibagi</div>
+      <div class="rc-dist">~<span>65 km</span> de PG</div>
+      <div class="rc-price">R$ 130</div>
+      <div class="rc-price-label">tarifa estimada</div>
+      <div class="rc-note">Região de grãos e pecuária. Combinamos na hora.</div>
+      <button class="btn-rc-whats" onclick="pedirViaWhats('Tibagi','R$ 130','65')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+        Pedir via WhatsApp
+      </button>
+    </div>
+
+    <div class="route-card">
+      <div class="rc-tag">💬 Sob consulta</div>
+      <div class="rc-city">Outras cidades</div>
+      <div class="rc-dist">acima de <span>80 km</span></div>
+      <div class="rc-price" style="font-size:22px; margin-top:4px;">Consultar</div>
+      <div class="rc-price-label">via WhatsApp</div>
+      <div class="rc-note">Ortigueira, Ventania, Curiúva e mais. A gente faz o orçamento na hora.</div>
+      <button class="btn-rc-whats" onclick="pedirViaWhats('outra cidade','consultar','?')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+        Solicitar Orçamento
+      </button>
+    </div>
+
+  </div>
+
+  <div class="routes-disclaimer">
+    <span class="disc-icon">ℹ️</span>
+    <span>Valores intermunicipais são <strong>tarifas fixas</strong> — sem cobrança por km adicional. Incluem deslocamento de ida e aguardo razoável no destino. Para cargas acima de 30kg ou volumes especiais, pode haver acréscimo combinado previamente. Pagamento aceito em Pix, dinheiro ou transferência.</span>
+  </div>
+</div>
+
+<div class="features">
+  <div class="feature-card">
+    <div class="feat-icon">⚡</div>
+    <div class="feat-title">Ultra Rápido</div>
+    <div class="feat-desc">Atendimento ágil e pontual em PG e região.</div>
+  </div>
+  <div class="feature-card">
+    <div class="feat-icon">💸</div>
+    <div class="feat-title">Preço Justo</div>
+    <div class="feat-desc">Sem taxas ocultas. O que você vê é o que você paga.</div>
+  </div>
+  <div class="feature-card">
+    <div class="feat-icon">🚜</div>
+    <div class="feat-title">Vai no Baú</div>
+    <div class="feat-desc">Peças agrícolas, maquinário e insumos na região toda.</div>
+  </div>
+</div>
+
+<footer>
+  Feito com 🏍️ para <span>Ponta Grossa e Região — PR</span> &nbsp;|&nbsp; MotoRun PG © 2025
+</footer>
+
+<script>
+const NUMERO = '5542988702217';
+const BASE_TAXA = 15;
+const BASE_KM = 5;
+const EXTRA_POR_KM = 2;
+
+// Tabela de preços intermunicipais
+const CIDADES_FIXAS = {
+  'carambeí': { preco: 100, km: 22, label: 'Carambeí' },
+  'carambei': { preco: 100, km: 22, label: 'Carambeí' },
+  'castro': { preco: 120, km: 52, label: 'Castro' },
+  'palmeira': { preco: 110, km: 45, label: 'Palmeira' },
+  'tibagi': { preco: 130, km: 65, label: 'Tibagi' },
+  'piraí do sul': { preco: 150, km: 80, label: 'Piraí do Sul' },
+  'pirai do sul': { preco: 150, km: 80, label: 'Piraí do Sul' },
+  'ortigueira': { preco: 170, km: 100, label: 'Ortigueira' },
+  'ventania': { preco: 165, km: 95, label: 'Ventania' },
+  'curiúva': { preco: 160, km: 90, label: 'Curiúva' },
+  'curiuva': { preco: 160, km: 90, label: 'Curiúva' },
+  'telêmaco borba': { preco: 175, km: 105, label: 'Telêmaco Borba' },
+  'telemaco borba': { preco: 175, km: 105, label: 'Telêmaco Borba' },
+  'imbituva': { preco: 115, km: 48, label: 'Imbituva' },
+  'ipiranga': { preco: 120, km: 52, label: 'Ipiranga' },
+  'ivaí': { preco: 125, km: 55, label: 'Ivaí' },
+  'ivai': { preco: 125, km: 55, label: 'Ivaí' },
+};
+
+const bairrosPG = [
+  'Centro', 'Uvaranas', 'Oficinas', 'Jardim Carvalho', 'Santa Paula',
+  'Neva', 'Estrela', 'Boa Vista', 'Órfãs', 'Contorno',
+  'Chapada', 'Colônia Dona Luíza', 'Ronda', 'Nova Rússia',
+  'Jardim Panorama', 'Monteiro Lobato', 'Piriquitos', 'Cará-Cará',
+  'Olarias', 'Jardim América'
+];
+
+const cidadesRegiao = [
+  { nome: 'Carambeí', tag: 'R$ 100' },
+  { nome: 'Castro', tag: 'R$ 120' },
+  { nome: 'Palmeira', tag: 'R$ 110' },
+  { nome: 'Tibagi', tag: 'R$ 130' },
+  { nome: 'Piraí do Sul', tag: 'R$ 150' },
+  { nome: 'Imbituva', tag: 'R$ 115' },
+  { nome: 'Ipiranga', tag: 'R$ 120' },
+  { nome: 'Ivaí', tag: 'R$ 125' },
+  { nome: 'Ortigueira', tag: 'R$ 170' },
+  { nome: 'Ventania', tag: 'R$ 165' },
+];
+
+let dadosCalculo = null;
+
+function detectarCidade(texto) {
+  const lower = texto.toLowerCase();
+  for (const [key, val] of Object.entries(CIDADES_FIXAS)) {
+    if (lower.includes(key)) return val;
+  }
+  return null;
+}
+
+function setupSuggestions(inputId, sugId, incluirCidades) {
+  const input = document.getElementById(inputId);
+  const sug = document.getElementById(sugId);
+
+  input.addEventListener('input', () => {
+    const val = input.value.trim();
+    if (val.length < 2) { sug.classList.remove('visible'); return; }
+
+    const lval = val.toLowerCase();
+    let html = '';
+
+    // Bairros PG
+    const matchBairros = bairrosPG
+      .filter(b => b.toLowerCase().includes(lval))
+      .slice(0, 3)
+      .map(b => `<div class="suggestion-item" onclick="selectSug('${inputId}','${sugId}','Ponta Grossa, PR — ${b}')"><span class="s-icon">📍</span>Ponta Grossa, PR — ${b}</div>`);
+
+    // Cidades da região (só no campo destino)
+    let matchCidades = [];
+    if (incluirCidades) {
+      matchCidades = cidadesRegiao
+        .filter(c => c.nome.toLowerCase().includes(lval))
+        .slice(0, 4)
+        .map(c => `<div class="suggestion-item intercity" onclick="selectSug('${inputId}','${sugId}','${c.nome} — PR')">
+          <span class="s-icon">🚜</span>${c.nome} — PR
+          <span class="s-badge">${c.tag}</span>
+        </div>`);
+    }
+
+    html = [...matchBairros, ...matchCidades].join('');
+    if (html) { sug.innerHTML = html; sug.classList.add('visible'); }
+    else { sug.classList.remove('visible'); }
+  });
+
+  document.addEventListener('click', e => {
+    if (!input.contains(e.target) && !sug.contains(e.target)) sug.classList.remove('visible');
+  });
+
+  // Detectar cidade ao digitar no campo destino
+  if (incluirCidades) {
+    input.addEventListener('input', () => atualizarAlertaIntercidade());
+  }
+}
+
+function selectSug(inputId, sugId, valor) {
+  document.getElementById(inputId).value = valor;
+  document.getElementById(sugId).classList.remove('visible');
+  if (inputId === 'destino') atualizarAlertaIntercidade();
+}
+
+function atualizarAlertaIntercidade() {
+  const destino = document.getElementById('destino').value;
+  const cidade = detectarCidade(destino);
+  const alert = document.getElementById('intercity-alert');
+  const alertText = document.getElementById('intercity-alert-text');
+
+  if (cidade) {
+    alertText.textContent = `Rota intermunicipal: ${cidade.label} (~${cidade.km} km) — tarifa fixa de R$ ${cidade.preco},00`;
+    alert.classList.add('show');
+  } else {
+    alert.classList.remove('show');
+  }
+}
+
+setupSuggestions('origem', 'sug-origem', false);
+setupSuggestions('destino', 'sug-destino', true);
+
+function estimarDistanciaLocal(end1, end2) {
+  let hash = 0;
+  const str = end1 + end2;
+  for (let i = 0; i < str.length; i++) {
+    hash = ((hash << 5) - hash) + str.charCodeAt(i);
+    hash |= 0;
+  }
+  return Math.round((2 + (Math.abs(hash) % 180) / 10) * 10) / 10;
+}
+
+function calcularPrecoLocal(km) {
+  if (km <= BASE_KM) return BASE_TAXA;
+  return BASE_TAXA + ((km - BASE_KM) * EXTRA_POR_KM);
+}
+
+function fmt(val) {
+  return val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+
+function calcular() {
+  const origem = document.getElementById('origem').value.trim();
+  const destino = document.getElementById('destino').value.trim();
+  let valid = true;
+
+  document.getElementById('err-origem').classList.remove('show');
+  document.getElementById('err-destino').classList.remove('show');
+
+  if (!origem) { document.getElementById('err-origem').classList.add('show'); valid = false; }
+  if (!destino) { document.getElementById('err-destino').classList.add('show'); valid = false; }
+  if (!valid) return;
+
+  const btn = document.getElementById('btn-calc');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Calculando...';
+
+  const cidadeFixa = detectarCidade(destino);
+
+  setTimeout(() => {
+    let km, preco, extraKm = 0, tipoRota, notaTexto;
+
+    if (cidadeFixa) {
+      // Rota intermunicipal com tarifa fixa
+      km = cidadeFixa.km;
+      preco = cidadeFixa.preco;
+      tipoRota = `Intermunicipal — ${cidadeFixa.label}`;
+      notaTexto = `Tarifa fixa para ${cidadeFixa.label}. Inclui deslocamento de ida e aguardo razoável. Para cargas especiais, confirme pelo WhatsApp.`;
+
+      document.getElementById('row-tipo').style.display = 'flex';
+      document.getElementById('res-tipo').textContent = tipoRota;
+      document.getElementById('label-base').textContent = `💰 Tarifa fixa intermunicipal`;
+      document.getElementById('res-base').textContent = fmt(preco);
+      document.getElementById('row-extra').style.display = 'none';
+      document.getElementById('row-total').querySelector('.val').style.color = 'var(--yellow)';
+
+    } else {
+      // Rota local PG
+      km = estimarDistanciaLocal(origem, destino);
+      preco = calcularPrecoLocal(km);
+      extraKm = km > BASE_KM ? km - BASE_KM : 0;
+      tipoRota = 'Local — Ponta Grossa';
+      notaTexto = `Estimativa baseada na rota. O valor final pode variar até 10% conforme o trânsito.`;
+
+      document.getElementById('row-tipo').style.display = 'none';
+      document.getElementById('label-base').textContent = `💰 Taxa base (até 5km)`;
+      document.getElementById('res-base').textContent = 'R$ 15,00';
+      document.getElementById('row-total').querySelector('.val').style.color = 'var(--accent)';
+
+      if (extraKm > 0) {
+        document.getElementById('row-extra').style.display = 'flex';
+        document.getElementById('res-extra').textContent = `${extraKm.toFixed(1)} km × R$2 = ${fmt(extraKm * EXTRA_POR_KM)}`;
+      } else {
+        document.getElementById('row-extra').style.display = 'none';
+      }
+    }
+
+    dadosCalculo = { origem, destino, km, preco, extraKm, obs: document.getElementById('obs').value.trim(), cidadeFixa };
+
+    document.getElementById('res-dist').textContent = km.toFixed(0) + ' km' + (cidadeFixa ? '' : ' (estimado)');
+    document.getElementById('res-total').textContent = fmt(preco);
+    document.getElementById('res-nota').textContent = notaTexto;
+
+    document.getElementById('resultado').classList.add('show');
+    document.getElementById('btn-whats').classList.add('show');
+
+    btn.disabled = false;
+    btn.innerHTML = '🔄 Recalcular';
+    document.getElementById('resultado').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 1100);
+}
+
+function enviarWhatsApp() {
+  if (!dadosCalculo) return;
+  const { origem, destino, km, preco, obs, cidadeFixa } = dadosCalculo;
+
+  const tipoLabel = cidadeFixa ? `🚜 *Rota intermunicipal* — ${cidadeFixa.label}` : `📦 *Rota local* — Ponta Grossa`;
+
+  const msg = `🏍️ *NOVO PEDIDO — MotoRun PG*
+
+${tipoLabel}
+📦 *Coleta:* ${origem}
+📍 *Entrega:* ${destino}
+📏 *Distância:* ~${km.toFixed(0)} km
+💰 *Valor:* ${fmt(preco)}${cidadeFixa ? ' (tarifa fixa)' : ''}${obs ? `\n💬 *Obs:* ${obs}` : ''}
+
+_Pedido feito pelo site MotoRun PG_`;
+
+  window.open(`https://wa.me/${NUMERO}?text=${encodeURIComponent(msg)}`, '_blank');
+}
+
+function pedirViaWhats(cidade, preco, km) {
+  const isConsulta = preco === 'consultar';
+  const msg = isConsulta
+    ? `🏍️ *PEDIDO — MotoRun PG*\n\n🚜 Rota intermunicipal — *${cidade}*\n📍 Destino: quero entregar em outra cidade da região\n💬 Pode me passar o valor?\n\n_Via tabela de rotas — site MotoRun PG_`
+    : `🏍️ *PEDIDO — MotoRun PG*\n\n🚜 Rota intermunicipal — *${cidade}*\n📏 Distância: ~${km} km\n💰 Valor: ${preco} (tarifa fixa)\n\n📦 Endereço de coleta: \n📍 Endereço de entrega em ${cidade}: \n💬 Observação: \n\n_Via tabela de rotas — site MotoRun PG_`;
+  window.open(`https://wa.me/${NUMERO}?text=${encodeURIComponent(msg)}`, '_blank');
+}
+
+document.getElementById('destino').addEventListener('input', atualizarAlertaIntercidade);
+document.getElementById('origem').addEventListener('keydown', e => { if(e.key === 'Enter') document.getElementById('destino').focus(); });
+document.getElementById('destino').addEventListener('keydown', e => { if(e.key === 'Enter') calcular(); });
+</script>
+</body>
+</html>
